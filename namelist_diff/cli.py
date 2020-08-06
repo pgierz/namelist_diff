@@ -1,6 +1,21 @@
 """Console script for namelist_diff."""
 import argparse
 import sys
+import tempfile
+from itertools import zip_longest
+
+import dictdiffer
+import f90nml
+
+from .namelist_diff import (
+    ansi_ljust,
+    clean_mvstreamctl,
+    clean_paths,
+    clean_set_stream,
+    clean_set_stream_element,
+    format_nml,
+    longest_line_global,
+)
 
 
 def main():
@@ -54,14 +69,11 @@ def main():
     # nml1_human_readable = open(args.nml1).read().split("\n")
     # nml2_human_readable = open(args.nml2).read().split("\n")
     nml1_human_readable = f1.read().split("\n")
-    nml2_human_readable = f2.read().split("\n")
 
     nml1_human_readable = [fr"{item}" for item in nml1_human_readable]
     # nml2_human_readable = [fr"{item}" for item in nml2_human_readable]
 
     longest_line1 = len(max(nml1_human_readable, key=len)) + 3
-    longest_line2 = len(max(nml2_human_readable, key=len)) + 3
-    longest_line = max(longest_line1, longest_line2)
 
     # PG: BAD HACK:
     longest_line1 = longest_line_global

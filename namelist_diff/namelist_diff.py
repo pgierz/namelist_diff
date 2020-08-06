@@ -1,4 +1,14 @@
 """Main module."""
+import logging
+import pdb
+import tempfile
+
+from ansiwrap import ansilen
+import colorama
+import f90nml
+
+
+longest_line_global = 0
 
 
 def ansi_ljust(s, width):
@@ -91,7 +101,6 @@ def format_entry(current_chapter, current_entry, all_diffs):
             elif isinstance(rest[0], list):
                 diff_key = rest[0][1]
             else:
-                import pdb
 
                 pdb.set_trace()
             # Check current entry vs diff entry:
@@ -100,11 +109,10 @@ def format_entry(current_chapter, current_entry, all_diffs):
             old_value, new_value = rest[1]
             # Remove the diff, it has been solved:
             all_diffs.remove(current_diff)
-            # return "    {}{}{}".format(nml_print(diff_key),nml_print(" = "),nml_print(old_value))
             s = nml_print("~    {}{}{}".format(diff_key, " = ", old_value))
             check_longest_line(s)
             return s
-        elif diff_type == "add":
+        if diff_type == "add":
             try:
                 new_key, new_value = rest[1].pop()
             except IndexError:
@@ -112,18 +120,15 @@ def format_entry(current_chapter, current_entry, all_diffs):
 
                 pdb.set_trace()
             all_diffs.remove(current_diff)
-            # return "    {}{}{}".format(nml_print(new_key),nml_print(" = "), nml_print(new_value))
             s = nml_print("+    {}{}{}".format(new_key, " = ", new_value))
             check_longest_line(s)
             return s
-        elif diff_type == "remove":
+        if diff_type == "remove":
             all_diffs.remove(current_diff)
             s = nml_print("-    {}{}{}".format(rest[1][0][0], " = ", rest[1][0][1]))
             check_longest_line(s)
             return s
-        else:
-            raise ValueError("Unknown Diff Type...")
-    # return "    {}{}{}".format(crayons.normal(current_key), crayons.normal(" = "), crayons.normal(current_value))
+        raise ValueError("Unknown Diff Type...")
     s = "    {}{}{}".format(current_key, " = ", current_value)
     check_longest_line(s)
     return s
@@ -132,7 +137,6 @@ def format_entry(current_chapter, current_entry, all_diffs):
 def format_remaining_diff(current_diff, all_diffs):
     return_list = []
     diff_type, rest = current_diff[0], current_diff[1:]
-    nml_print = determine_print_color(diff_type)
     nml_prefix = determine_print_prefix(diff_type)
     dummy_chapter, chapter = rest
     try:
@@ -160,14 +164,12 @@ def format_nml(nml, fhdl, diff):
     all_diffs = list(diff)
     while all_diffs:
         for chapter in nml:
-            # fhdl.write("{}{}".format(crayons.normal("&"), crayons.normal(chapter))+"\n")
             fhdl.write(f"&{chapter}\n")
             raw_entries = list(nml[chapter].items())
             while raw_entries:
                 current_entry = raw_entries.pop()
                 formatted_entry = format_entry(chapter, current_entry, all_diffs)
                 fhdl.write(formatted_entry + "\n")
-            # fhdl.write("{}".format(crayons.normal("/"))+"\n")
             fhdl.write("/\n")
         logging.debug("Diffs remaining after looping over all chapters:")
         logging.debug(all_diffs)
