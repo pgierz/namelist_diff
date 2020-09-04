@@ -10,7 +10,17 @@ with open("README.rst") as readme_file:
 with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
-requirements = ["ansiwrap", "f90nml", "dictdiffer", "colorama"]
+requirements = [
+    "ansiwrap",
+    "anyconfig",
+    "colorama",
+    "dictdiffer",
+    "environs",
+    "everett[yaml]",
+    "f90nml",
+    "pyxdg",
+    "pyyaml",
+]
 
 setup_requirements = []
 
