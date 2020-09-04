@@ -14,6 +14,8 @@ Namelist Diff
         :alt: Documentation Status
 
 
+.. warning:: This package is still under construction!!
+
 Smart Diffs for Fortran Namelists. Allows you to compare two different
 namelists and takes care of order of entries within a namelist chapter, order
 of the actual chapters, comments, and case sensitivity. Regular diff would just
