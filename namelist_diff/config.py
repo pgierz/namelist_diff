@@ -104,6 +104,12 @@ def get_config(config_file=None):
     config : dict
         The configuration to use
 
+    Example
+    -------
+
+    >>> config = get_config()
+    >>> debug = config.get("debug")  # Evaluates to whatever debug is set in
+                                     # the first configuration found
     """
 
     environments = [
